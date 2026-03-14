@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Language Precision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Language audit tool</p>
+        <h1>Make company writing sharper, clearer, and harder to ignore.</h1>
+        <p class="lede">Analyze vague language, jargon, tone, and precision. Then generate a tighter version with a scorecard worth screenshotting.</p>
+        <div class="hero__actions">
+          <span class="precision-badge" id="precisionBadge">Precision Score <strong>74</strong><span>Solid</span></span>
+          <button class="ghost-button" id="copyBadge">Copy score badge</button>
+        </div>
+      </div>
+      <div class="hero__panel">
+        <div class="mini-card">
+          <span>Best for</span>
+          <strong>Homepages, positioning, product descriptions, investor blurbs</strong>
+        </div>
+        <div class="mini-card">
+          <span>Focus areas</span>
+          <strong>Precision, clarity, strength, specificity, tone</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <section class="panel input-panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Input</p>
+            <h2>Company description</h2>
+          </div>
+          <div class="tone-picker">
+            <label for="toneSelect">Tone</label>
+            <select id="toneSelect">
+              <option value="formal">Formal</option>
+              <option value="casual">Casual</option>
+              <option value="bold">Bold</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sample-group">
+          <p>Preset samples</p>
+          <div class="sample-chips" id="sampleChips"></div>
+        </div>
+
+        <label class="field-label" for="inputText">Paste text to analyze</label>
+        <textarea id="inputText" placeholder="Describe what the company does, for whom, and why it matters."></textarea>
+
+        <div class="controls">
+          <button class="primary-button" id="analyzeBtn">Analyze & refine</button>
+          <button class="secondary-button" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="legend">
+          <span><i class="swatch vague"></i>Vague</span>
+          <span><i class="swatch strong"></i>Strong</span>
+          <span><i class="swatch jargon"></i>Jargon</span>
+        </div>
+      </section>
+
+      <section class="panel dashboard-panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Score dashboard</p>
+            <h2>Language profile</h2>
+          </div>
+        </div>
+
+        <div class="score-grid">
+          <div class="score-card">
+            <span>Precision</span>
+            <strong id="scorePrecision">74</strong>
+            <button class="tooltip-trigger" data-tip="How exact the wording is. Higher means fewer fuzzy qualifiers and more concrete claims.">?</button>
+          </div>
+          <div class="score-card">
+            <span>Clarity</span>
+            <strong id="scoreClarity">69</strong>
+            <button class="tooltip-trigger" data-tip="How easy the text is to parse on the first read. Penalizes long, tangled, or abstract phrasing.">?</button>
+          </div>
+          <div class="score-card">
+            <span>Strength</span>
+            <strong id="scoreStrength">63</strong>
+            <button class="tooltip-trigger" data-tip="How assertive and confident the language sounds. Rewards crisp verbs and direct claims.">?</button>
+          </div>
+          <div class="score-card">
+            <span>Specificity</span>
+            <strong id="scoreSpecificity">58</strong>
+            <button class="tooltip-trigger" data-tip="How grounded the text is in concrete nouns, audience, outcomes, and differentiators.">?</button>
+          </div>
+          <div class="score-card">
+            <span>Tone fit</span>
+            <strong id="scoreTone">72</strong>
+            <button class="tooltip-trigger" data-tip="How well the writing matches the selected tone while staying readable and credible.">?</button>
+          </div>
+        </div>
+
+        <div class="radar-wrap">
+          <div class="radar-chart" id="radarChart">
+            <div class="radar-grid radar-grid--1"></div>
+            <div class="radar-grid radar-grid--2"></div>
+            <div class="radar-grid radar-grid--3"></div>
+            <div class="radar-grid radar-grid--4"></div>
+            <div class="radar-axis axis-a"></div>
+            <div class="radar-axis axis-b"></div>
+            <div class="radar-axis axis-c"></div>
+            <div class="radar-label label-top">Precision</div>
+            <div class="radar-label label-right">Strength</div>
+            <div class="radar-label label-bottom-right">Tone</div>
+            <div class="radar-label label-bottom-left">Specificity</div>
+            <div class="radar-label label-left">Clarity</div>
+            <div class="radar-fill" id="radarFill"></div>
+          </div>
+        </div>
+
+        <div class="findings" id="findings"></div>
+      </section>
+    </main>
+
+    <section class="panel tabs-panel">
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" data-tab="diff">Before / after diff</button>
+        <button class="tab" data-tab="highlight">Word analysis</button>
+        <button class="tab" data-tab="rewrite">Refined version</button>
+      </div>
+
+      <div class="tab-panels">
+        <section class="tab-panel is-active" id="tab-diff">
+          <div class="diff-grid">
+            <article class="diff-card">
+              <p class="diff-label">Before</p>
+              <div id="beforeDiff" class="diff-text"></div>
+            </article>
+            <article class="diff-card refined">
+              <p class="diff-label">After</p>
+              <div id="afterDiff" class="diff-text"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-highlight">
+          <div class="highlight-grid">
+            <div>
+              <p class="diff-label">Original text, annotated</p>
+              <div id="annotatedText" class="annotated-text"></div>
+            </div>
+            <div class="keyword-lists">
+              <div>
+                <p class="list-label">Vague words</p>
+                <ul id="vagueList"></ul>
+              </div>
+              <div>
+                <p class="list-label">Strong words</p>
+                <ul id="strongList"></ul>
+              </div>
+              <div>
+                <p class="list-label">Jargon</p>
+                <ul id="jargonList"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-rewrite">
+          <div class="rewrite-card">
+            <p class="diff-label">Suggested rewrite</p>
+            <div id="rewriteText" class="rewrite-text"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <template id="tooltipTemplate">
+    <span class="tooltip"></span>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
