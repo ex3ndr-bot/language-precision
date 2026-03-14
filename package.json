@@ -1,0 +1,9 @@
+{
+  "name": "language-precision",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node backend-snapshot/server.js"
+  }
+}

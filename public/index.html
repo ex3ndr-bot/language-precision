@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Language Precision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Language audit tool</p>
+        <h1>Make company writing sharper, clearer, and harder to ignore.</h1>
+        <p class="lede">Analyze vague language, jargon, passive voice, and redundancy. Then generate a tighter version with a real backend scorecard.</p>
+        <div class="hero__actions">
+          <span class="precision-badge" id="precisionBadge">Precision Score <strong>--</strong><span>Waiting</span></span>
+          <button class="ghost-button" id="copyBadge">Copy score badge</button>
+        </div>
+      </div>
+      <div class="hero__panel">
+        <div class="mini-card">
+          <span>Best for</span>
+          <strong>Homepages, positioning, product descriptions, investor blurbs</strong>
+        </div>
+        <div class="mini-card">
+          <span>Real backend</span>
+          <strong>Node.js API, JSON storage, history, stats, diff, presets</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <section class="panel input-panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Input</p>
+            <h2>Company description</h2>
+          </div>
+          <div class="tone-picker">
+            <label for="toneSelect">Tone</label>
+            <select id="toneSelect">
+              <option value="formal">Formal</option>
+              <option value="casual">Casual</option>
+              <option value="bold">Bold</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sample-group">
+          <p>Preset samples</p>
+          <div class="sample-chips" id="sampleChips"></div>
+        </div>
+
+        <label class="field-label" for="inputText">Paste text to analyze</label>
+        <textarea id="inputText" placeholder="Describe what the company does, for whom, and why it matters."></textarea>
+
+        <div class="controls">
+          <button class="primary-button" id="analyzeBtn">Analyze & refine</button>
+          <button class="secondary-button" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="legend">
+          <span><i class="swatch vague"></i>Vague</span>
+          <span><i class="swatch strong"></i>Strong</span>
+          <span><i class="swatch jargon"></i>Jargon</span>
+        </div>
+      </section>
+
+      <section class="panel dashboard-panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Score dashboard</p>
+            <h2>Language profile</h2>
+          </div>
+        </div>
+
+        <div class="score-grid">
+          <div class="score-card"><span>Precision</span><strong id="scorePrecision">--</strong></div>
+          <div class="score-card"><span>Clarity</span><strong id="scoreClarity">--</strong></div>
+          <div class="score-card"><span>Vagueness</span><strong id="scoreVagueness">--</strong></div>
+          <div class="score-card"><span>Jargon</span><strong id="scoreJargon">--</strong></div>
+          <div class="score-card"><span>Passive voice</span><strong id="scorePassive">--</strong></div>
+          <div class="score-card"><span>Redundancy</span><strong id="scoreRedundancy">--</strong></div>
+        </div>
+
+        <div class="radar-card">
+          <div class="radar-graph" id="radarGraph">
+            <div class="radar-grid radar-grid--1"></div>
+            <div class="radar-grid radar-grid--2"></div>
+            <div class="radar-grid radar-grid--3"></div>
+            <div class="radar-grid radar-grid--4"></div>
+            <div class="radar-axis axis-a"></div>
+            <div class="radar-axis axis-b"></div>
+            <div class="radar-axis axis-c"></div>
+            <span class="radar-label label-top">Clarity</span>
+            <span class="radar-label label-right">Jargon</span>
+            <span class="radar-label label-bottom-right">Passive</span>
+            <span class="radar-label label-bottom-left">Redundancy</span>
+            <span class="radar-label label-left">Vagueness</span>
+            <div class="radar-fill" id="radarFill"></div>
+          </div>
+          <div class="findings" id="findings"></div>
+        </div>
+
+        <div class="tabs-panel">
+          <div class="tabs">
+            <button class="tab is-active" data-tab="diff">Diff</button>
+            <button class="tab" data-tab="highlights">Highlights</button>
+            <button class="tab" data-tab="history">History</button>
+            <button class="tab" data-tab="stats">Stats</button>
+          </div>
+
+          <div class="tab-panel is-active" id="tab-diff">
+            <div class="diff-grid">
+              <article class="diff-card">
+                <p class="diff-label">Original</p>
+                <div class="diff-text" id="originalText"></div>
+              </article>
+              <article class="diff-card refined">
+                <p class="diff-label">Refined</p>
+                <div class="diff-text" id="refinedText"></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-highlights">
+            <div class="highlight-grid">
+              <article class="rewrite-card">
+                <p class="diff-label">Detected language</p>
+                <div class="annotated-text" id="annotatedText"></div>
+              </article>
+              <article class="rewrite-card">
+                <p class="diff-label">Refined copy</p>
+                <div class="rewrite-text" id="rewriteText"></div>
+                <div class="keyword-lists">
+                  <div>
+                    <strong>Vague / hedging</strong>
+                    <ul id="vagueList"></ul>
+                  </div>
+                  <div>
+                    <strong>Jargon</strong>
+                    <ul id="jargonList"></ul>
+                  </div>
+                  <div>
+                    <strong>Strong verbs</strong>
+                    <ul id="strongList"></ul>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-history">
+            <div class="rewrite-card">
+              <p class="diff-label">Recent analyses</p>
+              <div id="historyList" class="findings"></div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-stats">
+            <div class="rewrite-card">
+              <p class="diff-label">API stats</p>
+              <div id="statsPanel" class="findings"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
